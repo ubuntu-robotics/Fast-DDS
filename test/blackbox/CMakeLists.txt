@@ -324,8 +324,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/PubSubReaderPersistence.xml.in
     ${CMAKE_CURRENT_BINARY_DIR}/PubSubReaderPersistence.xml)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/discovery_participant_flags.xml
     ${CMAKE_CURRENT_BINARY_DIR}/discovery_participant_flags.xml)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/persistence.xml
-    ${CMAKE_CURRENT_BINARY_DIR}/persistence.xml)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/StatisticsDomainParticipant.xml
     ${CMAKE_CURRENT_BINARY_DIR}/StatisticsDomainParticipant.xml)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/utils/check_guid.py
