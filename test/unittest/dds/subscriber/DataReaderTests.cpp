@@ -53,6 +53,7 @@
 
 #include <fastdds/rtps/common/Locator.h>
 #include <fastrtps/utils/IPLocator.h>
+#include <utils/SystemInfo.hpp>
 
 #include "FooBoundedType.hpp"
 #include "FooBoundedTypeSupport.hpp"
@@ -66,15 +67,6 @@
 #include <fastrtps/xmlparser/XMLProfileManager.h>
 
 #include <asio.hpp>
-
-#if defined(_WIN32)
-#define GET_PID _getpid
-#include <process.h>
-#else
-#define GET_PID getpid
-#include <sys/types.h>
-#include <unistd.h>
-#endif // if defined(_WIN32)
 
 using namespace eprosima::fastdds::dds;
 using namespace eprosima::fastdds::rtps;
@@ -97,7 +89,8 @@ public:
         type_.reset(new FooTypeSupport());
 
         std::ostringstream topic_name_s;
-        topic_name_s << "footopic" << "_" << asio::ip::host_name() << "_" << GET_PID();
+        topic_name_s << "footopic" << "_" << asio::ip::host_name() << "_" <<
+                eprosima::SystemInfo::instance().process_id();
         topic_name = topic_name_s.str();
     }
 
@@ -147,7 +140,8 @@ protected:
             const DomainParticipantQos& part_qos = PARTICIPANT_QOS_DEFAULT)
     {
         participant_ =
-                DomainParticipantFactory::get_instance()->create_participant((uint32_t)GET_PID() % 230, part_qos);
+                DomainParticipantFactory::get_instance()->create_participant(
+            (uint32_t)eprosima::SystemInfo::instance().process_id() % 230, part_qos);
         ASSERT_NE(participant_, nullptr);
 
         subscriber_ = participant_->create_subscriber(sqos);
@@ -604,16 +598,18 @@ TEST_F(DataReaderTests, get_guid)
         ParticipantFilteringFlags_t::FILTER_DIFFERENT_PROCESS);
 
     DomainParticipant* listener_participant =
-            DomainParticipantFactory::get_instance()->create_participant((uint32_t)GET_PID() % 230, participant_qos,
-                    &discovery_listener,
-                    StatusMask::none());
+            DomainParticipantFactory::get_instance()->create_participant(
+        (uint32_t)eprosima::SystemInfo::instance().process_id() % 230, participant_qos,
+        &discovery_listener,
+        StatusMask::none());
 
     DomainParticipantFactoryQos factory_qos;
     DomainParticipantFactory::get_instance()->get_qos(factory_qos);
     factory_qos.entity_factory().autoenable_created_entities = false;
     DomainParticipantFactory::get_instance()->set_qos(factory_qos);
     DomainParticipant* participant =
-            DomainParticipantFactory::get_instance()->create_participant((uint32_t)GET_PID() % 230, participant_qos);
+            DomainParticipantFactory::get_instance()->create_participant(
+        (uint32_t)eprosima::SystemInfo::instance().process_id() % 230, participant_qos);
     ASSERT_NE(participant, nullptr);
 
     Subscriber* subscriber = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
@@ -2421,7 +2417,7 @@ TEST_F(DataReaderUnsupportedTests, UnsupportedDataReaderMethods)
 {
     DomainParticipant* participant =
             DomainParticipantFactory::get_instance()->create_participant(
-        (uint32_t)GET_PID() % 230, PARTICIPANT_QOS_DEFAULT);
+        (uint32_t)eprosima::SystemInfo::instance().process_id() % 230, PARTICIPANT_QOS_DEFAULT);
     ASSERT_NE(participant, nullptr);
 
     Subscriber* subscriber = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
@@ -2569,7 +2565,7 @@ TEST_F(DataReaderTests, delete_contained_entities)
 {
     DomainParticipant* participant =
             DomainParticipantFactory::get_instance()->create_participant(
-        (uint32_t)GET_PID() % 230, PARTICIPANT_QOS_DEFAULT);
+        (uint32_t)eprosima::SystemInfo::instance().process_id() % 230, PARTICIPANT_QOS_DEFAULT);
     ASSERT_NE(participant, nullptr);
 
     Subscriber* subscriber = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
