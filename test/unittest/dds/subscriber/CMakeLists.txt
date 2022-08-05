@@ -17,7 +17,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../profiles/test_xml_profiles.xml
     COPYONLY)
 
 set(SUBSCRIBERTESTS_SOURCE SubscriberTests.cpp)
-set(DATAREADERTESTS_SOURCE DataReaderTests.cpp)
+set(DATAREADERTESTS_SOURCE 
+    DataReaderTests.cpp
+    ${PROJECT_SOURCE_DIR}/src/cpp/utils/SystemInfo.cpp
+    )
 
 if(WIN32)
     add_definitions(-D_WIN32_WINNT=0x0601)
